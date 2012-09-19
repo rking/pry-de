@@ -1,5 +1,9 @@
 # encoding: utf-8
 
+task :'pry-de' do
+  sh *%w(bundle exec pry -Ilib -rpry-de) + ARGV[1..-1]
+end
+
 require 'bundler'
 begin
   Bundler.setup(:default, :development)
