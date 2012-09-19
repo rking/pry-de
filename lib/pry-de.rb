@@ -20,12 +20,24 @@ module PryDe
       run_command 'play --lines 2..-2 -m'
     end
 
-    # Hackish, but comes in handy due to vim's :Ex
-    Pry.commands.alias_command ',l', 'edit lib'
+    # Hackish, but comes in handy, e.g. due to vim's dir browsing (:Ex)
+    Pry.commands.command ',l', 'edit lib/' do
+      run 'edit lib/'
+      IO.popen('git status --porcelain -- lib').readlines.each do |dirty|
+        load dirty.split(' ').last
+      end
+    end
 
-    Pry.commands.command ',r', 'Rerun previous command, like in zsh' do
+    Pry.commands.command ',r', 'Rerun previous command, like "r" in zsh' do
       run 'history --replay -1'
     end
+
+    Pry.commands.command '?$', 'show-doc + show-source' do
+      run '? ' + arg_string
+      run '$ ' + arg_string
+    end
+
+    # TODO: ,clip ⇒ cat -i; clipit -i $stdin.readline.chomp
 
     # ,, aliases all the ",cmd"s to "cmd". Undo with a second ",,"
     # I'll promise not to use x and y, so they can always be metasyntactic.
