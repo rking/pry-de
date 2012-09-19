@@ -3,18 +3,27 @@ require 'pry'
 module PryDe
 
   Commands = Pry::CommandSet.new do
-    if Pry.config.want_pry_de_junk
-      p 'here, in junk!'
-      Pry.config.pry_de_rb ||= '~/src/pry-de/lib/pry-de.rb'
-      Pry.commands.command ',pry-de-reload', "Reload" do
-        load Pry.config.pry_de_rb
-      end
+    Pry.commands.alias_command ',b', 'break'
+    Pry.commands.alias_command ',s', 'step'
+    Pry.commands.alias_command ',n', 'next'
+    Pry.commands.alias_command ',c', 'continue'
+    Pry.commands.alias_command ',f', 'finish'
+
+    # Good for cleaning up prior to `play -i 2..5` and such
+    Pry.commands.command ',-', 'Remove last item from history' do
+      fail 'Newer (possibly Github) pry needed' unless
+        _pry_.input_array.respond_to? :pop!
+      _pry_.input_array.pop!
     end
 
-    # If you want to name a var 'r' and then see it, disambiguated as an
-    # expression, you can enter:
-    # ;r
-    Pry.commands.command 'r', 'Rerun previous command, like in zsh' do
+    Pry.commands.command ',m', 'play method body only' do
+      run_command 'play --lines 2..-2 -m'
+    end
+
+    # Hackish, but comes in handy due to vim's :Ex
+    Pry.commands.alias_command ',l', 'edit lib'
+
+    Pry.commands.command ',r', 'Rerun previous command, like in zsh' do
       run 'history --replay -1'
     end
 
@@ -51,21 +60,6 @@ module PryDe
         break if ex.backtrace[v].match /gems\/pry/
         run "cat --ex #{v}"
       end
-    end
-
-    Pry.commands.alias_command ',b', 'break'
-    Pry.commands.alias_command ',c', 'continue'
-    Pry.commands.alias_command ',s', 'step'
-    Pry.commands.alias_command ',n', 'next'
-
-    # Hackish, but comes in handy due to vim's :Ex
-    Pry.commands.alias_command ',l', 'edit lib'
-
-    # Good for cleaning up prior to `play -i 2..5` and such
-    Pry.commands.command ',-', 'Remove last item from history' do
-      fail 'Newer (possibly Github) pry needed' unless
-        _pry_.input_array.respond_to? :pop!
-      _pry_.input_array.pop!
     end
 
     # TODO: promote to pry-docmore.
