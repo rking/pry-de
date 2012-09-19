@@ -1,6 +1,13 @@
 source 'http://rubygems.org'
 
-gem 'pry'
+def hubgem user_repo, branch = 'master'
+  user, repo = user_repo.split ?/
+  gem repo, git: "git@github.com:#{user}/#{repo}", branch: branch
+end
+
+hubgem 'pry/pry'
+hubgem 'guard/guard', 'interactor/pry'
+gem 'pry-full'
 
 group :development do
   gem 'rspec'
