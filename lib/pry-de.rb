@@ -19,7 +19,6 @@ module PryDe
       name_value_pairs = loc_names.map do |name|
         [name, (target.eval name.to_s)]
       end
-      require 'pry';binding.pry
       name_value_pairs.sort! do |(a,av), (b,bv)|
         bv.to_s.size <=> av.to_s.size
       end
