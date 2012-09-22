@@ -3,14 +3,19 @@ require 'pry'
 module PryDe
 
   Commands = Pry::CommandSet.new do
+    def psuedo_alias dest, src
+      command dest, "Alias for `#{src}`" do
+        run src
+      end
+    end
     # pry-debugger shortcuts:
-    Pry.commands.alias_command ',b', 'break'
-    Pry.commands.alias_command ',s', 'step'
-    Pry.commands.alias_command ',n', 'next'
-    Pry.commands.alias_command ',c', 'continue'
-    Pry.commands.alias_command ',f', 'finish'
+    psuedo_alias ',b', 'break'
+    psuedo_alias ',s', 'step'
+    psuedo_alias ',n', 'next'
+    psuedo_alias ',c', 'continue'
+    psuedo_alias ',f', 'finish'
 
-    Pry.commands.command ',loc' do |*args|
+    command ',loc', 'Show hash of local vars' do |*args|
       pry_vars = [
         :____, :___, :__, :_, :_dir_, :_file_, :_ex_, :_pry_, :_out_, :_in_ ]
       loc_names = target.eval('local_variables').reject do |e|
@@ -25,31 +30,31 @@ module PryDe
       Pry.print.call _pry_.output, Hash[name_value_pairs]
     end
 
-    Pry.commands.command ',-',
+    command ',-',
       'Remove last item from history, in preparation for a `play` command' do
       fail 'Newer (possibly Github) pry needed' unless
         _pry_.input_array.respond_to? :pop!
       _pry_.input_array.pop!
     end
 
-    Pry.commands.command ',m', 'play method body only' do
+    command ',m', 'play method body only' do
       run_command 'play --lines 2..-2 -m'
     end
 
     # Hopefully this will be of diminished employment, as more direct routes
     # to the desired file:line grow, but for now it's a good all-purpose "edit"
-    Pry.commands.command ',lib', 'edit lib/' do
+    command ',lib', 'edit lib/' do
       run 'edit lib/'
       IO.popen('git status --porcelain -- lib').readlines.each do |dirty|
         load dirty.split(' ').last
       end
     end
 
-    Pry.commands.command ',r', 'Rerun previous command, like "r" in zsh' do
+    command ',r', 'Rerun previous command, like "r" in zsh' do
       run 'history --replay -1'
     end
 
-    Pry.commands.command '?$', 'show-doc + show-source' do
+    command '?$', 'show-doc + show-source' do
       begin
         run '? ' + arg_string
       rescue Pry::CommandError => e
@@ -63,32 +68,32 @@ module PryDe
     # ,, aliases all the ",cmd"s to "cmd". Undo with a second ",,"
     # I'll promise not to use x and y, so they can always be metasyntactic.
     # …but the rest are fair game.
-    Pry.commands.command ',,',
+    command ',,',
       'toggle ,-prefixes off/on commands, for terse input' do
       abbreviations = []
-      Pry.commands.commands.keys.reject do |cmd|
+      commands.keys.reject do |cmd|
         cmd.class != String or cmd[0] != ',' or cmd == ',,'
       end.each do |e|
         terse = e[1..-1]
         # TODO: check to see if you're stomping on something, first.
-        Pry.commands.alias_command terse, e
+        alias_command terse, e
         abbreviations << terse
       end
-      Pry.commands.command ',,', 'unsplat all ,-commands' do
+      command ',,', 'unsplat all ,-commands' do
         abbreviations.each do |too_terse|
-          Pry.commands.delete too_terse
+          delete too_terse
         end
       end
       Pry.output.puts "Added commands: #{abbreviations.join ' '}"
     end
 
-    Pry.commands.block_command /[$?]?\s*(.*?)\s*,,e\s*(.*)/,
+    block_command /[$?]?\s*(.*?)\s*,,e\s*(.*)/,
       'edit from anywhere on the line' do |a,b|
       run "edit #{a} #{b}"
     end
 
     # I want this upstreamed as cat --EX
-    Pry.commands.command 'cat--EX', 'show whole backtrace' do
+    command 'cat--EX', 'show whole backtrace' do
       ex = _pry_.last_exception
       count = ex.backtrace.count
       (0...count).each do |v|
@@ -101,7 +106,7 @@ module PryDe
     # Follow pry-doc further, e.g.:
     # $ [].push
     # C$ rb_ary_modify
-    Pry.commands.command 'C$', 'Hop to tag in the Ruby C source' do
+    command 'C$', 'Hop to tag in the Ruby C source' do
       # TODO: Also check the dirs where rvm and ruby-build place trees.
       src_dir = ENV['RUBY_SRC_DIR'] || ENV['HOME']+'/pkg'
       unless Dir.exist? src_dir
