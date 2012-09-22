@@ -18,11 +18,11 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   gem.name = 'pry-de'
   gem.homepage = 'http://github.com/rking/pry-de'
-  gem.license = 'MIT'
+  gem.license = 'CC0'
   gem.summary = %Q{Run-time Ruby Development Environment based on Pry. [Maturity: Fœtal. Only use if you're adventurous]}
   gem.description = %Q{For the concept, see: https://github.com/pry/pry/wiki/pry-de}
   gem.email = 'pry-de@sharpsaw.org'
-  gem.authors = ['☈king']
+  gem.authors = ['☈king', 'Banisterfiend']
 end
 Jeweler::RubygemsDotOrgTasks.new
 

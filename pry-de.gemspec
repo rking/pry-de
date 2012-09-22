@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.version = "0.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["\u{2608}king"]
-  s.date = "2012-09-16"
+  s.authors = ["\u{2608}king", "Banisterfiend"]
+  s.date = "2012-09-20"
   s.description = "For the concept, see: https://github.com/pry/pry/wiki/pry-de"
   s.email = "pry-de@sharpsaw.org"
   s.extra_rdoc_files = [
@@ -20,16 +20,19 @@ Gem::Specification.new do |s|
     ".document",
     ".rspec",
     "Gemfile",
+    "Gemfile.lock",
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
     "VERSION",
     "lib/pry-de.rb",
+    "pry-de.gemspec",
     "spec/pry-de_spec.rb",
-    "spec/spec_helper.rb"
+    "spec/spec_helper.rb",
+    "vim/pry-de.vim"
   ]
   s.homepage = "http://github.com/rking/pry-de"
-  s.licenses = ["MIT"]
+  s.licenses = ["CC0"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
   s.summary = "Run-time Ruby Development Environment based on Pry. [Maturity: F\u{153}tal. Only use if you're adventurous]"
@@ -39,6 +42,8 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<pry>, [">= 0"])
+      s.add_runtime_dependency(%q<guard>, [">= 0"])
+      s.add_runtime_dependency(%q<pry-full>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<yard>, [">= 0"])
       s.add_development_dependency(%q<rdoc>, [">= 0"])
@@ -46,6 +51,8 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, [">= 0"])
     else
       s.add_dependency(%q<pry>, [">= 0"])
+      s.add_dependency(%q<guard>, [">= 0"])
+      s.add_dependency(%q<pry-full>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<yard>, [">= 0"])
       s.add_dependency(%q<rdoc>, [">= 0"])
@@ -54,6 +61,8 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<pry>, [">= 0"])
+    s.add_dependency(%q<guard>, [">= 0"])
+    s.add_dependency(%q<pry-full>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<yard>, [">= 0"])
     s.add_dependency(%q<rdoc>, [">= 0"])
