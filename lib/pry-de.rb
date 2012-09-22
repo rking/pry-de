@@ -10,6 +10,22 @@ module PryDe
     Pry.commands.alias_command ',c', 'continue'
     Pry.commands.alias_command ',f', 'finish'
 
+    Pry.commands.command ',loc' do |*args|
+      pry_vars = [
+        :____, :___, :__, :_, :_dir_, :_file_, :_ex_, :_pry_, :_out_, :_in_ ]
+      loc_names = target.eval('local_variables').reject do |e|
+        pry_vars.include? e
+      end
+      name_value_pairs = loc_names.map do |name|
+        [name, (target.eval name.to_s)]
+      end
+      require 'pry';binding.pry
+      name_value_pairs.sort! do |(a,av), (b,bv)|
+        bv.to_s.size <=> av.to_s.size
+      end
+      Pry.print.call _pry_.output, Hash[name_value_pairs]
+    end
+
     Pry.commands.command ',-',
       'Remove last item from history, in preparation for a `play` command' do
       fail 'Newer (possibly Github) pry needed' unless
