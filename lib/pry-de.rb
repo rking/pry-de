@@ -35,7 +35,11 @@ module PryDe
     end
 
     Pry.commands.command '?$', 'show-doc + show-source' do
-      run '? ' + arg_string
+      begin
+        run '? ' + arg_string
+      rescue Pry::CommandError => e
+        output.puts text.bold('Behold: ') + e.message
+      end
       run '$ ' + arg_string
     end
 
