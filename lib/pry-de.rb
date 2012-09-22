@@ -21,8 +21,9 @@ module PryDe
       run_command 'play --lines 2..-2 -m'
     end
 
-    # Hackish, but comes in handy, e.g. due to vim's dir browsing (:Ex)
-    Pry.commands.command ',l', 'edit lib/' do
+    # Hopefully this will be of diminished employment, as more direct routes
+    # to the desired file:line grow, but for now it's a good all-purpose "edit"
+    Pry.commands.command ',lib', 'edit lib/' do
       run 'edit lib/'
       IO.popen('git status --porcelain -- lib').readlines.each do |dirty|
         load dirty.split(' ').last
