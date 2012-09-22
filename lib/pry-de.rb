@@ -3,14 +3,15 @@ require 'pry'
 module PryDe
 
   Commands = Pry::CommandSet.new do
+    # pry-debugger shortcuts:
     Pry.commands.alias_command ',b', 'break'
     Pry.commands.alias_command ',s', 'step'
     Pry.commands.alias_command ',n', 'next'
     Pry.commands.alias_command ',c', 'continue'
     Pry.commands.alias_command ',f', 'finish'
 
-    # Good for cleaning up prior to `play -i 2..5` and such
-    Pry.commands.command ',-', 'Remove last item from history' do
+    Pry.commands.command ',-',
+      'Remove last item from history, in preparation for a `play` command' do
       fail 'Newer (possibly Github) pry needed' unless
         _pry_.input_array.respond_to? :pop!
       _pry_.input_array.pop!
@@ -42,7 +43,8 @@ module PryDe
     # ,, aliases all the ",cmd"s to "cmd". Undo with a second ",,"
     # I'll promise not to use x and y, so they can always be metasyntactic.
     # …but the rest are fair game.
-    Pry.commands.command ',,', 'splat all ,-commands into ,-unadornedness' do
+    Pry.commands.command ',,',
+      'toggle ,-prefixes off/on commands, for terse input' do
       abbreviations = []
       Pry.commands.commands.keys.reject do |cmd|
         cmd.class != String or cmd[0] != ',' or cmd == ',,'
@@ -65,6 +67,7 @@ module PryDe
       run "edit #{a} #{b}"
     end
 
+    # I want this upstreamed as cat --EX
     Pry.commands.command 'cat--EX', 'show whole backtrace' do
       ex = _pry_.last_exception
       count = ex.backtrace.count
