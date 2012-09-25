@@ -76,12 +76,12 @@ module PryDe
       end.each do |e|
         terse = e[1..-1]
         # TODO: check to see if you're stomping on something, first.
-        alias_command terse, e
+        Pry.commands.alias_command terse, e
         abbreviations << terse
       end
-      command ',,', 'unsplat all ,-commands' do
+      Pry.commands.command ',,', 'unsplat all ,-commands' do
         abbreviations.each do |too_terse|
-          delete too_terse
+          Pry.commands.delete too_terse
         end
       end
       Pry.output.puts "Added commands: #{abbreviations.join ' '}"
