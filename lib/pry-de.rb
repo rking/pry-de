@@ -46,7 +46,8 @@ module PryDe
     command ',lib', 'edit lib/' do
       run 'edit lib/'
       IO.popen('git status --porcelain -- lib').readlines.each do |dirty|
-        load dirty.split(' ').last
+        entry = dirty.split(' ').last
+        load entry if File.file? entry
       end
     end
 
