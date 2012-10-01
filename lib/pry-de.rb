@@ -2,10 +2,16 @@ require 'pry'
 
 module PryDe
 
+  def self.version_warny_input_pop _pry_
+    fail 'Newer (possibly Github) pry needed' unless
+      _pry_.input_array.respond_to? :pop!
+    _pry_.input_array.pop!
+  end
+
   Commands = Pry::CommandSet.new do
     def psuedo_alias dest, src
       command dest, "Alias for `#{src}`" do
-        run src
+        run src + ' ' + arg_string
       end
     end
     # pry-debugger shortcuts:
@@ -32,9 +38,7 @@ module PryDe
 
     command ',-',
       'Remove last item from history, in preparation for a `play` command' do
-      fail 'Newer (possibly Github) pry needed' unless
-        _pry_.input_array.respond_to? :pop!
-      _pry_.input_array.pop!
+      PryDe.version_warny_input_pop _pry_
     end
 
     command ',m', 'play method body only' do
@@ -51,9 +55,7 @@ module PryDe
       end
     end
 
-    command ',r', 'Rerun previous command, like "r" in zsh' do
-      run 'history --replay -1'
-    end
+    # alias_command ',r', 'hist --replay -1'
 
     command '?$', 'show-doc + show-source' do
       begin

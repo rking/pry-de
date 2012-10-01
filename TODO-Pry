@@ -1,0 +1,2 @@
+class Pry::HistoryArray; def inspect; to_a …? end end
+clipit doesn't add "\n"
