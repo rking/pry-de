@@ -21,6 +21,8 @@ module PryDe
     psuedo_alias ',c', 'continue'
     psuedo_alias ',f', 'finish'
 
+    psuedo_alias ',w', 'whereami'
+
     command ',loc', 'Show hash of local vars' do |*args|
       pry_vars = [
         :____, :___, :__, :_, :_dir_, :_file_, :_ex_, :_pry_, :_out_, :_in_ ]
