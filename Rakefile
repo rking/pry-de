@@ -3,7 +3,7 @@ require 'bundler/gem_tasks'
 
 task default: :test
 task :test do
-  sh 'testrb tests'
+  sh 'testrb test'
 end
 
 task :'pry-de' do
