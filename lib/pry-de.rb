@@ -54,11 +54,11 @@ module PryDe
         change.sub! /./, '' # don't care about the cache status
         status, filename = change.split(/ /, 2)
         case status
-        when 'A', 'M' then filename
+        when 'A', 'M', '?' then filename
         when 'D' then nil
         else
           _pry_.output.puts "pry-de doesn't know about status %s for %s" % \
-            status, filename
+            [ status, filename ]
           filename
         end
       end.compact
