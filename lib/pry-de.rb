@@ -23,6 +23,7 @@ module PryDe
 
     psuedo_alias ',w', 'whereami'
 
+    # (Trying to upstream. See: https://github.com/pry/pry/pull/722 )
     command ',loc', 'Show hash of local vars' do |*args|
       pry_vars = [
         :____, :___, :__, :_, :_dir_, :_file_, :_ex_, :_pry_, :_out_, :_in_ ]
@@ -47,6 +48,36 @@ module PryDe
       run_command 'play --lines 2..-2 -m'
     end
 
+    command ',refactor' do
+      raw = `git status --porcelain`
+      to_examine = raw.split(/\n/).map do |change|
+        change.sub! /./, '' # don't care about the cache status
+        status, filename = change.split(/ /, 2)
+        case status
+        when 'A', 'M' then filename
+        when 'D' then nil
+        else
+          _pry_.output.puts "pry-de doesn't know about status %s for %s" % \
+            status, filename
+          filename
+        end
+      end.compact
+      to_examine.reject! do |filename|
+        dir = File.dirname filename
+        path = File.basename filename
+        vim_swapfile = dir + '/.' + path + '.swp'
+        if File.exists? vim_swapfile
+          _pry_.output.puts "Found vim swapfile for #{filename} (Skipping)"
+          true
+        end
+      end
+      if 0 < to_examine.size
+        system Pry.config.editor, *to_examine
+      else
+        _pry_.output.puts "Nothing found to refactor via \`git status\`"
+      end
+    end
+
     # Hopefully this will be of diminished employment, as more direct routes
     # to the desired file:line grow, but for now it's a good all-purpose "edit"
     command ',lib', 'edit lib/' do
@@ -57,6 +88,7 @@ module PryDe
       end
     end
 
+    # XXX needs to not recurse.
     # alias_command ',r', 'hist --replay -1'
 
     command '?$', 'show-doc + show-source' do
