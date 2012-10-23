@@ -1,15 +1,10 @@
-" Add this as ~/.vim/ftplugin/ruby_pry-de.vim (and make sure you've done:
-"   filetype plugin on
-" in your vim startup files.
+" Add the pry debug line with \bp (or <Space>bp, if you did: map <Space> <Leader> )
+map <Leader>bp orequire'pry';binding.pry<esc>:w<cr>
+" Alias for one-handed operation:
+map <Leader><Leader>p <Leader>bp
+" …also, Insert Mode as bpry<space>
+iabbr bpry require'pry';binding.pry
 
-" Add the pry debug line with \\p (or <Space><Space>p, if you mapped it)
-map <Leader><Leader>p orequire 'pry';binding.pry<esc>:w<cr>
-" …also, allow bpry<space> (or bpry<C-]>) from Insert Mode:
-iabbr bpry require 'pry';binding.pry
-
-" Nab the last line from ~/.pry_history.
-map <leader>pry1 o<esc>:.!tail -1 ~/.pry_history<cr>==
-
-" Recommended: Play with tslime.vim, vimux, et. al.
-" I plan to really work out a good flow with the best parts of those, and put
-" it here. In the meantime, these paltry snippets will have to do. ☹
+" Nab lines from ~/.pry_history (respects "count")
+nmap <Leader>pry :<c-u>let pc = (v:count1 ? v:count1 : 1)<cr>:read !tail -<c-r>=pc<cr> ~/.pry_history<cr>:.-<c-r>=pc-1<cr>:norm <c-r>=pc<cr>==<cr>
+" ↑ thanks to Houl, ZyX-i, and paradigm of #vim for all dogpiling on this one.
