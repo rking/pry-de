@@ -1,0 +1,15 @@
+# pry-de
+
+Run-time Ruby Development Environment based on Pry. [Maturity: Infantile]
+
+See: https://github.com/pry/pry/wiki/pry-de
+
+<%
+  warn "(Running pry…)"
+  help_output = `pry -e 'Pry.config.pager = false' -e help -e quit`
+  help_output.match /pry-de.+?\n(.*?)\n\n/m
+  pry_de_commands = $1.split(/\n/)
+  pry_de_commands.each do |e|
+    /\s*(?<cmd>\S+)\s+(?<desc>.+)/ =~ e
+%> - `<%= cmd %>` (<%= desc %>)
+<% end %>
