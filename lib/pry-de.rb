@@ -88,6 +88,11 @@ module PryDe
       end
     end
 
+    command ',hs', 'hist --save ~/.pry_history - e.g. for vim <leader>ph' do
+      # TODO: make this more efficient. (This actually rewrites the whole thing)
+      run 'hist --save ~/.pry_history'
+    end
+
     # XXX needs to not recurse.
     # alias_command ',r', 'hist --replay -1'
 
