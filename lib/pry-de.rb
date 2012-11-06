@@ -48,6 +48,13 @@ module PryDe
       run_command 'play --lines 2..-2 -m'
     end
 
+    command ',lft', 'load _file_ and try-again, for pry-rescue/minitest' do
+      current_file = target.eval '_file_'
+      warn "Reloading: " + current_file
+      load current_file
+      _pry_.run_command 'try-again'
+    end
+
     command ',refactor' do
       raw = `git status --porcelain`
       to_examine = raw.split(/\n/).map do |change|
