@@ -6,10 +6,20 @@ class TestBacktraceEdit < MiniTest::Unit::TestCase
   def test_first_line_parse
     input = '/blah/src/scrap/foo.rb:4:in `jump\': foo (RuntimeError)'
     expected = {
-      file: '/blah/src/scrap/foo.rb',
+      path: '/blah/src/scrap/foo.rb',
       line: '4',
-      method: 'jump',
-      error: ' foo (RuntimeError)'
+      extra: 'in `jump\': foo (RuntimeError)'
+    }
+    actual = PryDe::BacktraceEdit.parse_line input
+    assert_equal expected, actual
+  end
+
+  def test_line_parse_with_leading_from
+    input = '     from /blah/src/scrap/foo.rb:6:in `block in buz\'`'
+    expected = {
+      path: '/blah/src/scrap/foo.rb',
+      line: '6',
+      extra: 'in `block in buz\'`'
     }
     actual = PryDe::BacktraceEdit.parse_line input
     assert_equal expected, actual
