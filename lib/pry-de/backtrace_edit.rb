@@ -1,25 +1,28 @@
+# encoding: utf-8
 module PryDe
   class BacktraceEdit
     class << self
       def interact
-        warn 'Exit your editor (e.g. :cq from vim) with nonzero to stop early.'
+        warn green 'ZZ to hop to next, :cq to end.'
         trace.each do |e| edit e end
+      rescue => e
+        puts yellow e
       end
 
       def edit input
-        p input
         hash = parse_line input
         path = hash[:path]
         unless File.exist? path
           return warn <<-EOT
-From this line: '#{input}'
-parsed '#{path}' does not exist.
+From this line: '#{cyan input}'
+parsed '#{yellow path}', which does not exist.
 Assuming to not be a frame and, skipping
           EOT
         end
         viewer = vim_already_open_for(path) ? 'view' : 'vim'
+        warn blue "#{hash[:extra]} ↴"
         verbose_system viewer, path, ?+ + hash[:line]
-        fail unless $?.success?
+        raise 'OK, done.' unless $?.success?
       end
 
       def trace
@@ -30,25 +33,36 @@ Assuming to not be a frame and, skipping
       end
 
       def trace_via_stdin
-        warn 'Copy from clipboard not working. Paste manually then ^d it:'
+        warn yellow 'Copy from clipboard not working.'
+        warn cyan 'Paste manually, then hit ^d'
         STDIN.readlines
       end
 
       def vim_already_open_for path
         swpfile = "%s/.%s.swp" % [ File.dirname(path), File.basename(path) ]
-        p :checking, swpfile
         File.exist? swpfile
       end
 
       def parse_line input
+        input.chomp!
         r = Hash[[:path, :line, :extra].zip(input.split(?:, 3))]
         r[:path].sub! /^\s*from /, ''
         r
       end
 
       def verbose_system *args
-        puts args.join ' '
+        require 'shellwords'
+        cmd = args.map(&:shellescape).join ' '
+        warn cyan '    '+cmd
         system *args
+      end
+
+      def green str; color 32, str end
+      def yellow str; color 33, str end
+      def blue str; color 34, str end
+      def cyan str; color 36, str end
+      def color num, str
+        "\e[#{num}m#{str}\e[0m" % [num, str]
       end
     end
   end
