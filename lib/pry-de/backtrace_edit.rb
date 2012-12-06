@@ -20,8 +20,12 @@ Assuming to not be a frame and, skipping
           EOT
         end
         viewer = vim_already_open_for(path) ? 'view' : 'vim'
-        warn blue "#{hash[:extra]} ↴"
-        verbose_system viewer, path, ?+ + hash[:line]
+        offset = ?+ + hash[:line]
+        cmdheight = '+set cmdheight=2'
+        msg = vim_message_for hash[:extra]
+        warn blue "# #{hash[:extra]} ↴"
+        recenter = '+norm zz'
+        verbose_system viewer, path, cmdheight, msg, recenter, offset
         raise 'OK, done.' unless $?.success?
       end
 
@@ -41,6 +45,11 @@ Assuming to not be a frame and, skipping
       def vim_already_open_for path
         swpfile = "%s/.%s.swp" % [ File.dirname(path), File.basename(path) ]
         File.exist? swpfile
+      end
+
+      def vim_message_for str
+        cleaned = str.gsub ?", '\\"'
+        '+set ch=2|echo "%s"' % cleaned
       end
 
       def parse_line input
