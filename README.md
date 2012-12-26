@@ -11,13 +11,13 @@ Add this to your `~/.inputrc` to get F-keys similar to Firebug, etc.:
     $if Ruby
         $if mode=vi
             set keymap vi-command
-            "[19~":   "continue\n"  # <F8>
-            "[32~":   "try-again\n" # <Shift-F8> (urxvt)
-            "[19;2~": "try-again\n" # <Shift-F8> (xterm, gnome-terminal)
-            "[21~":   "next\n"      # <F10>
-            "[23~":   "step\n"      # <F11>
-            "[23$":   "finish\n"    # Shift+<F11> (urxvt)
-            "[23;2~": "finish\n"    # Shift+<F11> (xterm, gnome-terminal)
+            "[19~":   "Icontinue\n"  # <F8>
+            "[32~":   "Itry-again\n" # <Shift-F8> (urxvt)
+            "[19;2~": "Itry-again\n" # <Shift-F8> (xterm, gnome-terminal)
+            "[21~":   "Inext\n"      # <F10>
+            "[23~":   "Istep\n"      # <F11>
+            "[23$":   "Ifinish\n"    # Shift+<F11> (urxvt)
+            "[23;2~": "Ifinish\n"    # Shift+<F11> (xterm, gnome-terminal)
         $else
             "\e[19~":   "continue\n"
             "\e[32~":   "try-again\n"
