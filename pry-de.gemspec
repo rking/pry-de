@@ -18,6 +18,4 @@ Gem::Specification.new do |gem|
   gem.test_files = gem.files.grep %r{^(test|spec|features)/}
   gem.require_paths = %w(lib)
   %w(pry-full guard).each do |dep| gem.add_dependency dep end
-  %w(guard-minitest).each do |dep|
-    gem.add_development_dependency dep end
 end
